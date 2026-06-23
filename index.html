@@ -264,6 +264,47 @@ tbody tr:last-child td{border-bottom:none;}
 @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 @keyframes slideIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
 .anim{animation:fadeUp .35s ease both;}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* IMPORTAR DESDE GOOGLE MAPS */
+.gm-import{border:1px solid var(--brand-100);background:var(--brand-50);border-radius:14px;padding:16px;margin-bottom:22px;}
+.dark .gm-import{background:rgba(37,99,235,.08);border-color:var(--brand-700);}
+.gm-import-title{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:700;color:var(--brand-700);}
+.dark .gm-import-title{color:var(--brand-400);}
+.gm-import-title svg{width:18px;height:18px;}
+.gm-import-sub{font-size:12px;color:var(--muted);margin:4px 0 12px;}
+.gm-import-row{display:flex;gap:10px;flex-wrap:wrap;}
+.gm-import-row input{flex:1 1 200px;padding:10px 12px;border:1px solid var(--border);border-radius:10px;
+  font-size:14px;background:var(--card);color:var(--text);font-family:inherit;}
+.gm-import-row input:focus{border-color:var(--brand-500);box-shadow:0 0 0 3px rgba(37,99,235,.12);outline:none;}
+.gm-import-row .btn{flex:1 1 150px;justify-content:center;}
+.gm-import-row .btn:disabled{opacity:.7;cursor:default;transform:none;}
+.mini-spin{width:15px;height:15px;border:2px solid rgba(255,255,255,.45);border-top-color:#fff;
+  border-radius:50%;display:inline-block;animation:spin .7s linear infinite;}
+
+/* NOTIFICACIONES */
+.notif-wrap{position:relative;}
+.notif-wrap .icon-btn{position:relative;}
+.notif-badge{position:absolute;top:3px;right:3px;min-width:16px;height:16px;padding:0 4px;border-radius:8px;
+  background:var(--red);color:#fff;font-size:10px;font-weight:700;line-height:16px;text-align:center;pointer-events:none;}
+.notif-panel{position:absolute;top:46px;right:0;width:336px;max-width:90vw;background:var(--card);border:1px solid var(--border);
+  border-radius:14px;box-shadow:var(--shadow-lg);z-index:120;overflow:hidden;animation:fadeUp .18s ease both;}
+.notif-head{display:flex;align-items:center;justify-content:space-between;padding:13px 15px;border-bottom:1px solid var(--border);}
+.notif-head h4{font-size:14px;font-weight:700;}
+.notif-clear{font-size:12px;color:var(--brand-500);font-weight:600;background:none;cursor:pointer;padding:4px 6px;border-radius:7px;}
+.notif-clear:hover{background:var(--bg);}
+.notif-list{max-height:64vh;overflow-y:auto;}
+.notif-item{display:flex;gap:11px;padding:12px 15px;border-bottom:1px solid var(--border);align-items:flex-start;}
+.notif-item:last-child{border-bottom:none;}
+.ni-ico{width:30px;height:30px;border-radius:9px;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+.ni-ico svg{width:15px;height:15px;}
+.notif-body{flex:1;min-width:0;cursor:pointer;}
+.notif-body .nt{font-size:13px;font-weight:600;line-height:1.3;}
+.notif-body .nd{font-size:11px;color:var(--muted);margin-top:2px;}
+.notif-x{width:24px;height:24px;border-radius:7px;color:var(--muted);display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;}
+.notif-x:hover{background:var(--bg);color:var(--red);}
+.notif-x svg{width:14px;height:14px;}
+.notif-empty{padding:34px 15px;text-align:center;color:var(--muted);font-size:13px;}
 
 /* RESPONSIVE */
 @media(max-width:1024px){.kpi-grid{grid-template-columns:repeat(3,1fr);} .rank-grid{grid-template-columns:1fr;}}
@@ -276,7 +317,9 @@ tbody tr:last-child td{border-bottom:none;}
   .hide-sm{display:none;}
   .sidebar-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:35;}
 }
-@media(max-width:480px){.kpi-grid{grid-template-columns:1fr 1fr;} .content{padding:14px;}}
+@media(max-width:480px){.kpi-grid{grid-template-columns:1fr 1fr;} .content{padding:14px;}
+  .notif-panel{position:fixed;top:62px;right:10px;left:10px;width:auto;max-width:none;}
+}
 </style>
 </head>
 <body class="dark">
@@ -320,6 +363,13 @@ tbody tr:last-child td{border-bottom:none;}
         <div id="searchResults"></div>
       </div>
       <div class="topbar-actions">
+        <div class="notif-wrap">
+          <button class="icon-btn" onclick="toggleNotifs(event)" title="Notificaciones">
+            <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg>
+            <span class="notif-badge hidden" id="notifBadge">0</span>
+          </button>
+          <div id="notifPanel" class="notif-panel hidden"></div>
+        </div>
         <button class="icon-btn" onclick="toggleTheme()" title="Modo claro/oscuro">
           <svg id="themeIcon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/></svg>
         </button>
@@ -475,6 +525,76 @@ function toggleUserMenu(){
   m.classList.remove('hidden');
 }
 
+// -------- NOTIFICACIONES --------
+let notifsOpen = false;
+function getDismissedNotifs(){ try{ return JSON.parse(localStorage.getItem('crm_dismissed_notifs')||'[]'); }catch(e){ return []; } }
+function setDismissedNotifs(a){ localStorage.setItem('crm_dismissed_notifs', JSON.stringify(a)); }
+function buildNotifs(){
+  const out = [];
+  const today = new Date(new Date().toDateString());
+  visibleTasks().filter(t=>!t.completada && t.fecha_vencimiento).forEach(t=>{
+    const due = new Date(t.fecha_vencimiento+'T00:00:00');
+    const lead = t.lead_id ? DB.leads.find(l=>l.id===t.lead_id) : null;
+    const extra = (t.hora?(' · '+t.hora):'') + (lead?(' · '+lead.nombre+' '+lead.apellido):'');
+    if(due < today){
+      out.push({id:'task-overdue-'+t.id, tipo:'overdue', titulo:'Tarea vencida: '+t.titulo, desc:'Venció el '+fdate(t.fecha_vencimiento)+extra, leadId:t.lead_id});
+    } else if(due.getTime()===today.getTime()){
+      out.push({id:'task-today-'+t.id, tipo:'today', titulo:'Tarea para hoy: '+t.titulo, desc:'Hoy'+extra, leadId:t.lead_id});
+    }
+  });
+  const dis = getDismissedNotifs();
+  return out.filter(n=>!dis.includes(n.id));
+}
+function updateNotifBadge(){
+  const b = document.getElementById('notifBadge'); if(!b) return;
+  const n = buildNotifs().length;
+  if(n>0){ b.textContent = n>9?'9+':String(n); b.classList.remove('hidden'); }
+  else b.classList.add('hidden');
+}
+function toggleNotifs(ev){
+  if(ev) ev.stopPropagation();
+  const p = document.getElementById('notifPanel');
+  notifsOpen = !notifsOpen;
+  if(!notifsOpen){ p.classList.add('hidden'); return; }
+  renderNotifPanel();
+  p.classList.remove('hidden');
+}
+function renderNotifPanel(){
+  const p = document.getElementById('notifPanel'); if(!p) return;
+  const items = buildNotifs();
+  const ico = (tipo)=> tipo==='overdue'
+    ? `<div class="ni-ico" style="background:rgba(239,68,68,.12);color:var(--red)">${svg(I.bell)}</div>`
+    : `<div class="ni-ico" style="background:var(--brand-50);color:var(--brand-600)">${svg(I.calendar)}</div>`;
+  p.innerHTML = `<div class="notif-head"><h4>Notificaciones</h4>${items.length?`<button class="notif-clear" onclick="clearAllNotifs(event)">Borrar todas</button>`:''}</div>
+    <div class="notif-list">${items.length ? items.map(n=>`<div class="notif-item">
+        ${ico(n.tipo)}
+        <div class="notif-body" onclick="notifGo('${n.leadId||''}')"><div class="nt">${n.titulo}</div><div class="nd">${n.desc}</div></div>
+        <button class="notif-x" title="Borrar" onclick="dismissNotif(event,'${n.id}')">${svg(I.x)}</button>
+      </div>`).join('') : `<div class="notif-empty">No tenés notificaciones 🎉</div>`}</div>`;
+}
+function dismissNotif(ev, id){
+  if(ev) ev.stopPropagation();
+  const dis = getDismissedNotifs(); if(!dis.includes(id)){ dis.push(id); setDismissedNotifs(dis); }
+  renderNotifPanel(); updateNotifBadge();
+}
+function clearAllNotifs(ev){
+  if(ev) ev.stopPropagation();
+  const dis = getDismissedNotifs();
+  buildNotifs().forEach(n=>{ if(!dis.includes(n.id)) dis.push(n.id); });
+  setDismissedNotifs(dis);
+  renderNotifPanel(); updateNotifBadge();
+}
+function notifGo(leadId){
+  const p = document.getElementById('notifPanel'); if(p) p.classList.add('hidden'); notifsOpen=false;
+  if(leadId) openLeadDetail(leadId,'tareas'); else go('tareas');
+}
+// Cerrar el panel al hacer clic afuera
+document.addEventListener('click', (e)=>{
+  if(notifsOpen && !e.target.closest('.notif-wrap')){
+    const p = document.getElementById('notifPanel'); if(p) p.classList.add('hidden'); notifsOpen=false;
+  }
+});
+
 // -------- TIEMPO REAL --------
 function subscribeRealtime(){
   if(realtimeOn) return; realtimeOn=true;
@@ -523,6 +643,7 @@ function go(page){
   else if(page==='comisiones') renderComisiones(c);
   else if(page==='equipo') renderEquipo(c);
   else if(page==='config') renderConfig(c);
+  updateNotifBadge();
 }
 
 // -------- SIDEBAR MOBILE --------
@@ -767,6 +888,14 @@ function openLeadForm(lead){
   modal.innerHTML = `<div class="modal"><div class="modal-head"><h3>${lead?'Editar Lead':'Nuevo Lead'}</h3>
     <button class="icon-btn" onclick="this.closest('.modal-bg').remove()">${svg(I.x)}</button></div>
     <div class="modal-body">
+      ${!lead?`<div class="gm-import">
+        <div class="gm-import-title">${svg(I.target)} Importar desde Google Maps</div>
+        <p class="gm-import-sub">Pegá el link del negocio y autocompletamos los datos.</p>
+        <div class="gm-import-row">
+          <input id="gm_url" type="url" inputmode="url" autocomplete="off" placeholder="https://maps.app.goo.gl/..." onkeydown="if(event.key==='Enter'){event.preventDefault();importFromMaps(this.nextElementSibling);}">
+          <button type="button" class="btn btn-primary" onclick="importFromMaps(this)">${svg(I.download)}Obtener datos</button>
+        </div>
+      </div>`:''}
       <div class="form-section-title">Datos Personales</div>
       <div class="form-grid">
         <div class="field"><label>Nombre *</label><input id="f_nombre" value="${e.nombre||''}"></div>
@@ -797,6 +926,36 @@ function openLeadForm(lead){
       </div>
     </div></div>`;
   document.body.appendChild(modal);
+}
+async function importFromMaps(btn){
+  const inp = document.getElementById('gm_url');
+  const url = (inp?inp.value:'').trim();
+  if(!url){ toast('Pegá un link de Google Maps'); inp&&inp.focus(); return; }
+  const orig = btn.innerHTML;
+  btn.disabled = true; if(inp) inp.disabled = true;
+  btn.innerHTML = `<span class="mini-spin"></span>Obteniendo...`;
+  try{
+    const r = await fetch('/api/places?url='+encodeURIComponent(url));
+    const d = await r.json().catch(()=>({}));
+    if(!r.ok || d.error) throw new Error(d.error || 'No se pudieron obtener los datos');
+    const set = (id,v)=>{ if(!v) return; const el=document.getElementById(id); if(el && !el.value.trim()) el.value=v; };
+    set('f_empresa', d.nombre);
+    set('f_rubro', d.rubro);
+    set('f_ciudad', d.ciudad);
+    set('f_whatsapp', d.telefono);
+    set('f_sitio_web', d.sitio_web);
+    if(d.provincia){ const sel=document.getElementById('f_provincia'); if(sel && !sel.value){ const m=[...sel.options].find(o=>o.value && d.provincia.toLowerCase().includes(o.value.toLowerCase())); if(m) sel.value=m.value; } }
+    const obs = document.getElementById('f_obs');
+    if(obs){
+      const block = [ d.direccion?('📍 '+d.direccion):'', (d.lat&&d.lng)?('Coordenadas: '+d.lat+', '+d.lng):'', 'Fuente: Google Maps', url ].filter(Boolean).join('\n');
+      obs.value = obs.value.trim() ? (obs.value.trim()+'\n\n'+block) : block;
+    }
+    toast('Datos cargados ✓ — revisá y completá el contacto');
+  }catch(err){
+    toast(err.message || 'Error al obtener los datos');
+  }finally{
+    btn.disabled=false; if(inp) inp.disabled=false; btn.innerHTML=orig;
+  }
 }
 function val(id){ const el=document.getElementById(id); return el?el.value.trim():''; }
 async function saveLead(id){
@@ -922,7 +1081,8 @@ function taskRow(t,leadId){
     <span class="task-check" onclick="toggleTask('${t.id}',${leadId?`'${leadId}'`:'null'})" style="color:${t.completada?'var(--green)':'var(--border)'}">${svg(t.completada?I.checkCircle:I.circle)}</span>
     <div style="flex:1;min-width:0"><div style="font-weight:600;font-size:14px;${t.completada?'text-decoration:line-through;color:var(--muted)':''}">${t.titulo}</div>
     ${t.fecha_vencimiento?`<div style="font-size:12px;color:var(--muted)">${fdate(t.fecha_vencimiento)}${t.hora?' '+t.hora:''}</div>`:''}</div>
-    <span class="prio ${t.prioridad}">${t.prioridad}</span></div>`;
+    <span class="prio ${t.prioridad}">${t.prioridad}</span>
+    ${t.fecha_vencimiento?`<a class="icon-btn" style="width:28px;height:28px;text-decoration:none" href="${gcalUrl(t)}" target="_blank" rel="noopener" title="Agregar a Google Calendar" onclick="event.stopPropagation()">${svg(I.calendar)}</a>`:''}</div>`;
 }
 async function toggleTask(id,leadId){
   const t=DB.tasks.find(x=>x.id===id); if(!t) return;
@@ -964,7 +1124,30 @@ function fullTaskRow(t){
         ${lead?`<a onclick="event.stopPropagation();openLeadDetail('${lead.id}')" style="font-size:12px;color:var(--brand-500);cursor:pointer">${lead.nombre} ${lead.apellido}</a>`:''}
       </div></div>
     <span class="prio ${t.prioridad}">${t.prioridad}</span>
+    ${t.fecha_vencimiento?`<a class="icon-btn" style="width:30px;height:30px;text-decoration:none" href="${gcalUrl(t)}" target="_blank" rel="noopener" title="Agregar a Google Calendar" onclick="event.stopPropagation()">${svg(I.calendar)}</a>`:''}
     <button class="icon-btn" style="width:30px;height:30px" onclick="delTask('${t.id}')">${svg(I.trash)}</button></div>`;
+}
+function pad2(n){ return String(n).padStart(2,'0'); }
+function gcalUrl(t){
+  if(!t.fecha_vencimiento) return '';
+  const [y,m,d] = t.fecha_vencimiento.split('-').map(Number);
+  let dates;
+  if(t.hora){
+    const [hh,mm] = t.hora.split(':').map(Number);
+    const start = new Date(y, m-1, d, hh, mm);
+    const end = new Date(start.getTime() + 60*60*1000);
+    const fmt = (x)=>`${x.getFullYear()}${pad2(x.getMonth()+1)}${pad2(x.getDate())}T${pad2(x.getHours())}${pad2(x.getMinutes())}00`;
+    dates = `${fmt(start)}/${fmt(end)}`;
+  } else {
+    const next = new Date(y, m-1, d); next.setDate(next.getDate()+1);
+    dates = `${y}${pad2(m)}${pad2(d)}/${next.getFullYear()}${pad2(next.getMonth()+1)}${pad2(next.getDate())}`;
+  }
+  const lead = t.lead_id ? DB.leads.find(l=>l.id===t.lead_id) : null;
+  const details = [t.descripcion||'', lead?('Lead: '+lead.nombre+' '+lead.apellido+(lead.empresa?(' ('+lead.empresa+')'):'')):'', 'Creado desde el CRM Tu Negocio En Las Redes'].filter(Boolean).join('\n');
+  return 'https://calendar.google.com/calendar/render?action=TEMPLATE'
+    + '&text=' + encodeURIComponent(t.titulo||'Tarea')
+    + '&dates=' + dates
+    + '&details=' + encodeURIComponent(details);
 }
 function openTaskForm(){
   const modal=document.createElement('div'); modal.className='modal-bg'; modal.onclick=e=>{if(e.target===modal)modal.remove();};
