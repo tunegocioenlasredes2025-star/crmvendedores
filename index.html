@@ -288,6 +288,55 @@ tbody tr:last-child td{border-bottom:none;}
 .notif-x:hover{background:var(--bg);color:var(--red);}
 .notif-x svg{width:14px;height:14px;}
 .notif-empty{padding:34px 15px;text-align:center;color:var(--muted);font-size:13px;}
+.notif-confirm{padding:14px 15px;border-bottom:1px solid var(--border);}
+.notif-confirm p{font-size:13px;font-weight:600;line-height:1.4;margin-bottom:11px;}
+.notif-confirm .row{display:flex;gap:8px;}
+.notif-confirm button{flex:1;padding:8px;border-radius:8px;font-size:12px;font-weight:600;transition:.15s;}
+.nc-no{background:var(--bg);color:var(--text);border:1px solid var(--border);}
+.nc-no:hover{background:var(--border);}
+.nc-yes{background:var(--red);color:#fff;}
+.nc-yes:hover{filter:brightness(.92);}
+
+/* CALENDARIO */
+.cal-toolbar{display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap;}
+.cal-nav{display:flex;align-items:center;gap:4px;}
+.cal-title{font-size:16px;font-weight:700;min-width:150px;text-align:center;text-transform:capitalize;}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;}
+.cal-dow{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.03em;text-align:center;padding:4px 0;}
+.cal-cell{min-height:94px;border:1px solid var(--border);border-radius:10px;padding:6px;background:var(--card);
+  cursor:pointer;transition:.15s;display:flex;flex-direction:column;gap:4px;overflow:hidden;}
+.cal-cell:hover{border-color:var(--brand-500);}
+.cal-cell.other{opacity:.4;}
+.cal-cell.today{border-color:var(--brand-500);box-shadow:inset 0 0 0 1px var(--brand-500);}
+.cal-cell.sel{background:var(--brand-50);}
+.dark .cal-cell.sel{background:rgba(37,99,235,.12);}
+.cal-daynum{font-size:12px;font-weight:600;align-self:flex-end;}
+.cal-cell.today .cal-daynum{background:var(--brand-800);color:#fff;border-radius:50%;width:22px;height:22px;
+  display:flex;align-items:center;justify-content:center;}
+.cal-evs{display:flex;flex-direction:column;gap:3px;min-width:0;}
+.cal-ev{font-size:11px;line-height:1.3;padding:2px 6px;border-radius:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600;}
+.cal-ev.alta{background:#FEE2E2;color:#B91C1C;} .dark .cal-ev.alta{background:rgba(239,68,68,.2);color:#FCA5A5;}
+.cal-ev.media{background:#FEF3C7;color:#B45309;} .dark .cal-ev.media{background:rgba(245,158,11,.2);color:#FDE047;}
+.cal-ev.baja{background:#E0E7FF;color:#4338CA;} .dark .cal-ev.baja{background:rgba(79,70,229,.2);color:#A5B4FC;}
+.cal-ev.done{text-decoration:line-through;opacity:.55;}
+.cal-more{font-size:10px;color:var(--muted);font-weight:600;padding-left:2px;}
+.cal-dots{display:none;gap:3px;flex-wrap:wrap;}
+.cal-dot{width:6px;height:6px;border-radius:50%;display:inline-block;}
+.cal-dot.alta{background:var(--red);} .cal-dot.media{background:var(--amber);} .cal-dot.baja{background:var(--brand-500);}
+.cal-agenda{margin-top:18px;}
+
+/* ACCIONES TAREA -> CALENDARIO */
+.cal-tag{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:8px;font-size:12px;font-weight:600;
+  background:var(--brand-50);color:var(--brand-700);transition:.15s;white-space:nowrap;}
+.dark .cal-tag{background:rgba(37,99,235,.15);color:var(--brand-400);}
+.cal-tag:hover{background:var(--brand-100);} .dark .cal-tag:hover{background:rgba(37,99,235,.25);}
+.cal-tag svg{width:14px;height:14px;flex-shrink:0;}
+.cal-add{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:8px;font-size:12px;font-weight:600;
+  background:var(--bg);color:var(--muted);border:1px solid var(--border);transition:.15s;white-space:nowrap;}
+.cal-add:hover{color:var(--brand-700);border-color:var(--brand-500);}
+.cal-add svg{width:14px;height:14px;flex-shrink:0;}
+.cal-rm{color:var(--muted);}
+.cal-rm:hover{color:var(--red);background:var(--bg);}
 
 /* RESPONSIVE */
 @media(max-width:1024px){.kpi-grid{grid-template-columns:repeat(3,1fr);} .rank-grid{grid-template-columns:1fr;}}
@@ -302,6 +351,18 @@ tbody tr:last-child td{border-bottom:none;}
 }
 @media(max-width:480px){.kpi-grid{grid-template-columns:1fr 1fr;} .content{padding:14px;}
   .notif-panel{position:fixed;top:62px;right:10px;left:10px;width:auto;max-width:none;}
+}
+@media(max-width:600px){
+  .cal-add span,.cal-tag span{display:none;}
+  .cal-add,.cal-tag{padding:7px;}
+}
+@media(max-width:640px){
+  .cal-grid{gap:4px;}
+  .cal-cell{min-height:52px;padding:4px;gap:2px;}
+  .cal-evs,.cal-more{display:none;}
+  .cal-dots{display:flex;}
+  .cal-daynum{align-self:center;font-size:13px;}
+  .cal-cell.today .cal-daynum{width:24px;height:24px;}
 }
 </style>
 </head>
@@ -423,6 +484,9 @@ const I = {
   down:'<polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/>',
   fileText:'<path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>',
   calendar:'<rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>',
+  calPlus:'<rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="12" y1="14" x2="12" y2="18"/><line x1="10" y1="16" x2="14" y2="16"/>',
+  calMinus:'<rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="10" y1="16" x2="14" y2="16"/>',
+  fwd:'<line x1="5" y1="12" x2="19" y2="12"/><path d="M12 5l7 7-7 7"/>',
   banknote:'<rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/>',
   award:'<circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/>',
   userPlus:'<path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/>',
@@ -510,8 +574,10 @@ function toggleUserMenu(){
 
 // -------- NOTIFICACIONES --------
 let notifsOpen = false;
-function getDismissedNotifs(){ try{ return JSON.parse(localStorage.getItem('crm_dismissed_notifs')||'[]'); }catch(e){ return []; } }
-function setDismissedNotifs(a){ localStorage.setItem('crm_dismissed_notifs', JSON.stringify(a)); }
+let notifConfirmClear = false;
+function dismKey(){ return 'crm_dismissed_notifs_' + (SESSION && SESSION.id ? SESSION.id : 'anon'); }
+function getDismissedNotifs(){ try{ return JSON.parse(localStorage.getItem(dismKey())||'[]'); }catch(e){ return []; } }
+function setDismissedNotifs(a){ localStorage.setItem(dismKey(), JSON.stringify(a)); }
 function buildNotifs(){
   const out = [];
   const today = new Date(new Date().toDateString());
@@ -538,6 +604,7 @@ function toggleNotifs(ev){
   if(ev) ev.stopPropagation();
   const p = document.getElementById('notifPanel');
   notifsOpen = !notifsOpen;
+  notifConfirmClear = false;
   if(!notifsOpen){ p.classList.add('hidden'); return; }
   renderNotifPanel();
   p.classList.remove('hidden');
@@ -548,23 +615,31 @@ function renderNotifPanel(){
   const ico = (tipo)=> tipo==='overdue'
     ? `<div class="ni-ico" style="background:rgba(239,68,68,.12);color:var(--red)">${svg(I.bell)}</div>`
     : `<div class="ni-ico" style="background:var(--brand-50);color:var(--brand-600)">${svg(I.calendar)}</div>`;
-  p.innerHTML = `<div class="notif-head"><h4>Notificaciones</h4>${items.length?`<button class="notif-clear" onclick="clearAllNotifs(event)">Borrar todas</button>`:''}</div>
-    <div class="notif-list">${items.length ? items.map(n=>`<div class="notif-item">
+  const head = notifConfirmClear
+    ? `<div class="notif-confirm"><p>¿Seguro que querés eliminar todas las notificaciones?</p>
+        <div class="row"><button class="nc-no" onclick="cancelClearNotifs(event)">Cancelar</button>
+        <button class="nc-yes" onclick="confirmClearNotifs(event)">Eliminar</button></div></div>`
+    : `<div class="notif-head"><h4>Notificaciones</h4>${items.length?`<button class="notif-clear" onclick="askClearNotifs(event)">Borrar todas</button>`:''}</div>`;
+  p.innerHTML = head +
+    `<div class="notif-list">${items.length ? items.map(n=>`<div class="notif-item">
         ${ico(n.tipo)}
         <div class="notif-body" onclick="notifGo('${n.leadId||''}')"><div class="nt">${n.titulo}</div><div class="nd">${n.desc}</div></div>
         <button class="notif-x" title="Borrar" onclick="dismissNotif(event,'${n.id}')">${svg(I.x)}</button>
-      </div>`).join('') : `<div class="notif-empty">No tenés notificaciones 🎉</div>`}</div>`;
+      </div>`).join('') : `<div class="notif-empty">No tenés notificaciones</div>`}</div>`;
 }
 function dismissNotif(ev, id){
   if(ev) ev.stopPropagation();
   const dis = getDismissedNotifs(); if(!dis.includes(id)){ dis.push(id); setDismissedNotifs(dis); }
   renderNotifPanel(); updateNotifBadge();
 }
-function clearAllNotifs(ev){
+function askClearNotifs(ev){ if(ev) ev.stopPropagation(); notifConfirmClear = true; renderNotifPanel(); }
+function cancelClearNotifs(ev){ if(ev) ev.stopPropagation(); notifConfirmClear = false; renderNotifPanel(); }
+function confirmClearNotifs(ev){
   if(ev) ev.stopPropagation();
   const dis = getDismissedNotifs();
   buildNotifs().forEach(n=>{ if(!dis.includes(n.id)) dis.push(n.id); });
   setDismissedNotifs(dis);
+  notifConfirmClear = false;
   renderNotifPanel(); updateNotifBadge();
 }
 function notifGo(leadId){
@@ -602,6 +677,7 @@ const NAV_ITEMS = [
   {id:'pipeline',  label:'Pipeline',  icon:I.pipe},
   {id:'leads',     label:'Leads',     icon:I.users},
   {id:'tareas',    label:'Tareas',    icon:I.check},
+  {id:'calendario',label:'Calendario',icon:I.calendar},
   {id:'comisiones',label:'Comisiones',icon:I.dollar},
   {id:'equipo',    label:'Equipo',    icon:I.team},
   {id:'config',    label:'Configuración', icon:I.cog, admin:true},
@@ -623,6 +699,7 @@ function go(page){
   else if(page==='pipeline') renderPipeline(c);
   else if(page==='leads') renderLeads(c);
   else if(page==='tareas') renderTareas(c);
+  else if(page==='calendario') renderCalendario(c);
   else if(page==='comisiones') renderComisiones(c);
   else if(page==='equipo') renderEquipo(c);
   else if(page==='config') renderConfig(c);
@@ -1025,9 +1102,9 @@ function taskRow(t,leadId){
   return `<div class="task-item ${t.completada?'done':''}">
     <span class="task-check" onclick="toggleTask('${t.id}',${leadId?`'${leadId}'`:'null'})" style="color:${t.completada?'var(--green)':'var(--border)'}">${svg(t.completada?I.checkCircle:I.circle)}</span>
     <div style="flex:1;min-width:0"><div style="font-weight:600;font-size:14px;${t.completada?'text-decoration:line-through;color:var(--muted)':''}">${t.titulo}</div>
-    ${t.fecha_vencimiento?`<div style="font-size:12px;color:var(--muted)">${fdate(t.fecha_vencimiento)}${t.hora?' '+t.hora:''}</div>`:''}</div>
+    ${t.fecha_vencimiento?`<div style="font-size:12px;color:var(--muted)">${fdate(t.fecha_vencimiento)}${t.hora?' '+hm(t.hora):''}</div>`:''}</div>
     <span class="prio ${t.prioridad}">${t.prioridad}</span>
-    ${t.fecha_vencimiento?`<a class="icon-btn" style="width:28px;height:28px;text-decoration:none" href="${gcalUrl(t)}" target="_blank" rel="noopener" title="Agregar a Google Calendar" onclick="event.stopPropagation()">${svg(I.calendar)}</a>`:''}</div>`;
+    ${calActions(t, leadId)}</div>`;
 }
 async function toggleTask(id,leadId){
   const t=DB.tasks.find(x=>x.id===id); if(!t) return;
@@ -1065,34 +1142,123 @@ function fullTaskRow(t){
     <span class="task-check" onclick="toggleTask('${t.id}',null)" style="color:${t.completada?'var(--green)':'var(--border)'}">${svg(t.completada?I.checkCircle:I.circle)}</span>
     <div style="flex:1;min-width:0"><div style="font-weight:600;${t.completada?'text-decoration:line-through;color:var(--muted)':''}">${t.titulo}</div>
       <div style="display:flex;gap:10px;margin-top:2px;flex-wrap:wrap">
-        ${t.fecha_vencimiento?`<span style="font-size:12px;color:${over?'var(--red)':'var(--muted)'}">${over?'⚠ ':''}${fdate(t.fecha_vencimiento)}${t.hora?' '+t.hora:''}</span>`:''}
+        ${t.fecha_vencimiento?`<span style="font-size:12px;color:${over?'var(--red)':'var(--muted)'};font-weight:${over?'600':'400'}">${over?'Vencida · ':''}${fdate(t.fecha_vencimiento)}${t.hora?' '+hm(t.hora):''}</span>`:''}
         ${lead?`<a onclick="event.stopPropagation();openLeadDetail('${lead.id}')" style="font-size:12px;color:var(--brand-500);cursor:pointer">${lead.nombre} ${lead.apellido}</a>`:''}
       </div></div>
     <span class="prio ${t.prioridad}">${t.prioridad}</span>
-    ${t.fecha_vencimiento?`<a class="icon-btn" style="width:30px;height:30px;text-decoration:none" href="${gcalUrl(t)}" target="_blank" rel="noopener" title="Agregar a Google Calendar" onclick="event.stopPropagation()">${svg(I.calendar)}</a>`:''}
-    <button class="icon-btn" style="width:30px;height:30px" onclick="delTask('${t.id}')">${svg(I.trash)}</button></div>`;
+    ${calActions(t, null)}
+    <button class="icon-btn" style="width:30px;height:30px" onclick="event.stopPropagation();delTask('${t.id}')" title="Eliminar tarea">${svg(I.trash)}</button></div>`;
 }
 function pad2(n){ return String(n).padStart(2,'0'); }
-function gcalUrl(t){
-  if(!t.fecha_vencimiento) return '';
-  const [y,m,d] = t.fecha_vencimiento.split('-').map(Number);
-  let dates;
-  if(t.hora){
-    const [hh,mm] = t.hora.split(':').map(Number);
-    const start = new Date(y, m-1, d, hh, mm);
-    const end = new Date(start.getTime() + 60*60*1000);
-    const fmt = (x)=>`${x.getFullYear()}${pad2(x.getMonth()+1)}${pad2(x.getDate())}T${pad2(x.getHours())}${pad2(x.getMinutes())}00`;
-    dates = `${fmt(start)}/${fmt(end)}`;
-  } else {
-    const next = new Date(y, m-1, d); next.setDate(next.getDate()+1);
-    dates = `${y}${pad2(m)}${pad2(d)}/${next.getFullYear()}${pad2(next.getMonth()+1)}${pad2(next.getDate())}`;
+function hm(h){ return h ? String(h).slice(0,5) : ''; }
+function escAttr(s){ return String(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
+
+/* ---- Acciones Tarea <-> Calendario ---- */
+function calActions(t, leadId){
+  const ref = leadId ? `'${leadId}'` : 'null';
+  if(t.fecha_vencimiento){
+    return `<button class="cal-tag" onclick="event.stopPropagation();viewInCalendar('${t.id}')" title="Ver en calendario">${svg(I.calendar)}<span>En calendario</span></button>
+      <button class="icon-btn cal-rm" style="width:30px;height:30px" onclick="event.stopPropagation();removeFromCalendar('${t.id}',${ref})" title="Quitar del calendario">${svg(I.calMinus)}</button>`;
   }
-  const lead = t.lead_id ? DB.leads.find(l=>l.id===t.lead_id) : null;
-  const details = [t.descripcion||'', lead?('Lead: '+lead.nombre+' '+lead.apellido+(lead.empresa?(' ('+lead.empresa+')'):'')):'', 'Creado desde el CRM Tu Negocio En Las Redes'].filter(Boolean).join('\n');
-  return 'https://calendar.google.com/calendar/render?action=TEMPLATE'
-    + '&text=' + encodeURIComponent(t.titulo||'Tarea')
-    + '&dates=' + dates
-    + '&details=' + encodeURIComponent(details);
+  return `<button class="cal-add" onclick="event.stopPropagation();openCalAdd('${t.id}',${ref})" title="Agregar al calendario">${svg(I.calPlus)}<span>Agregar al calendario</span></button>`;
+}
+function viewInCalendar(taskId){
+  const t = DB.tasks.find(x=>x.id===taskId); if(!t||!t.fecha_vencimiento) return;
+  const [y,m] = t.fecha_vencimiento.split('-').map(Number);
+  calRef = new Date(y, m-1, 1); calSel = t.fecha_vencimiento;
+  go('calendario');
+}
+function openCalAdd(taskId, leadId){
+  const t = DB.tasks.find(x=>x.id===taskId); if(!t) return;
+  const ref = (leadId && leadId!=='null') ? `'${leadId}'` : 'null';
+  const modal = document.createElement('div'); modal.className='modal-bg'; modal.onclick=e=>{if(e.target===modal)modal.remove();};
+  modal.innerHTML = `<div class="modal" style="max-width:420px"><div class="modal-head"><h3>Agregar al calendario</h3>
+      <button class="icon-btn" onclick="this.closest('.modal-bg').remove()">${svg(I.x)}</button></div>
+    <div class="modal-body">
+      <p style="font-size:13px;color:var(--muted);margin-bottom:16px">${t.titulo}</p>
+      <div class="form-grid">
+        <div class="field"><label>Fecha *</label><input id="cal_fecha" type="date" value="${todayStr()}"></div>
+        <div class="field"><label>Hora (opcional)</label><input id="cal_hora" type="time" value="${t.hora?hm(t.hora):''}"></div>
+      </div>
+      <div class="modal-foot"><button class="btn btn-secondary" onclick="this.closest('.modal-bg').remove()">Cancelar</button>
+        <button class="btn btn-primary" onclick="confirmCalAdd('${taskId}',${ref})">Agregar</button></div>
+    </div></div>`;
+  document.body.appendChild(modal);
+}
+async function confirmCalAdd(taskId, leadId){
+  const fecha = val('cal_fecha'); if(!fecha){ toast('Elegí una fecha'); return; }
+  const hora = val('cal_hora') || null;
+  await dbUpdate('tasks', taskId, {fecha_vencimiento:fecha, hora});
+  const m = document.querySelector('.modal-bg'); if(m) m.remove();
+  await loadAllData();
+  if(leadId && leadId!=='null') openLeadDetail(leadId,'tareas'); else go(currentPage);
+  updateNotifBadge();
+  toast('Agregada al calendario');
+}
+async function removeFromCalendar(taskId, leadId){
+  if(!confirm('¿Quitar esta tarea del calendario? La tarea no se elimina.')) return;
+  await dbUpdate('tasks', taskId, {fecha_vencimiento:null, hora:null});
+  await loadAllData();
+  if(leadId && leadId!=='null') openLeadDetail(leadId,'tareas'); else go(currentPage);
+  updateNotifBadge();
+  toast('Quitada del calendario');
+}
+
+/* ============================================================
+   CALENDARIO  (vista mensual de tareas agendadas)
+   ============================================================ */
+function todayStr(){ const d=new Date(); return `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`; }
+function dateStr(d){ return `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`; }
+function fdateLong(ds){ const [y,m,d]=ds.split('-').map(Number); return new Date(y,m-1,d).toLocaleDateString('es-AR',{weekday:'long',day:'numeric',month:'long'}); }
+let calRef = (()=>{ const d=new Date(); return new Date(d.getFullYear(), d.getMonth(), 1); })();
+let calSel = todayStr();
+function calShift(n){ calRef = new Date(calRef.getFullYear(), calRef.getMonth()+n, 1); renderCalendario(document.getElementById('content')); }
+function calToday(){ const d=new Date(); calRef=new Date(d.getFullYear(), d.getMonth(), 1); calSel=todayStr(); renderCalendario(document.getElementById('content')); }
+function calSelect(ds){ calSel=ds; renderCalendario(document.getElementById('content')); }
+function renderCalendario(c){
+  const y=calRef.getFullYear(), m=calRef.getMonth();
+  const monthName = calRef.toLocaleString('es-AR',{month:'long',year:'numeric'});
+  const startDow = (new Date(y,m,1).getDay()+6)%7; // Lunes = 0
+  const start = new Date(y, m, 1-startDow);
+  const byDay = {};
+  visibleTasks().filter(t=>t.fecha_vencimiento).forEach(t=>{ (byDay[t.fecha_vencimiento]=byDay[t.fecha_vencimiento]||[]).push(t); });
+  Object.values(byDay).forEach(arr=>arr.sort((a,b)=>(a.hora||'99').localeCompare(b.hora||'99')));
+  const dows = ['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'];
+  const todayS = todayStr();
+  let cells = '';
+  for(let i=0;i<42;i++){
+    const d = new Date(start); d.setDate(start.getDate()+i);
+    const ds = dateStr(d);
+    const evs = byDay[ds] || [];
+    const chips = evs.slice(0,3).map(t=>`<div class="cal-ev ${t.prioridad} ${t.completada?'done':''}" title="${escAttr((t.hora?hm(t.hora)+' ':'')+t.titulo)}">${t.hora?hm(t.hora)+' ':''}${t.titulo}</div>`).join('');
+    const more = evs.length>3 ? `<div class="cal-more">+${evs.length-3} más</div>` : '';
+    const dots = evs.slice(0,5).map(t=>`<span class="cal-dot ${t.prioridad}"></span>`).join('');
+    cells += `<div class="cal-cell ${d.getMonth()!==m?'other':''} ${ds===todayS?'today':''} ${ds===calSel?'sel':''}" onclick="calSelect('${ds}')">
+        <span class="cal-daynum">${d.getDate()}</span>
+        <div class="cal-evs">${chips}${more}</div>
+        <div class="cal-dots">${dots}</div>
+      </div>`;
+  }
+  const selTasks = byDay[calSel] || [];
+  c.innerHTML = `
+    <div class="page-head"><div><h2>Calendario</h2><div class="sub">Tareas agendadas del equipo</div></div>
+      <button class="btn btn-primary" onclick="openTaskForm()">${svg(I.plus)}Nueva Tarea</button></div>
+    <div class="card" style="padding:16px">
+      <div class="cal-toolbar">
+        <div class="cal-nav">
+          <button class="icon-btn" onclick="calShift(-1)" title="Mes anterior">${svg(I.back)}</button>
+          <div class="cal-title">${monthName}</div>
+          <button class="icon-btn" onclick="calShift(1)" title="Mes siguiente">${svg(I.fwd)}</button>
+        </div>
+        <button class="btn btn-secondary btn-sm" onclick="calToday()">Hoy</button>
+      </div>
+      <div class="cal-grid">${dows.map(d=>`<div class="cal-dow">${d}</div>`).join('')}${cells}</div>
+    </div>
+    <div class="cal-agenda">
+      <div class="form-section-title" style="margin-bottom:12px;text-transform:capitalize">${fdateLong(calSel)}</div>
+      ${selTasks.length ? `<div style="display:flex;flex-direction:column;gap:8px">${selTasks.map(t=>fullTaskRow(t)).join('')}</div>`
+                        : `<div class="card empty">No hay tareas para este día</div>`}
+    </div>`;
 }
 function openTaskForm(){
   const modal=document.createElement('div'); modal.className='modal-bg'; modal.onclick=e=>{if(e.target===modal)modal.remove();};
