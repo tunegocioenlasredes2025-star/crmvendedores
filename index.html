@@ -264,23 +264,6 @@ tbody tr:last-child td{border-bottom:none;}
 @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 @keyframes slideIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
 .anim{animation:fadeUp .35s ease both;}
-@keyframes spin{to{transform:rotate(360deg)}}
-
-/* IMPORTAR DESDE GOOGLE MAPS */
-.gm-import{border:1px solid var(--brand-100);background:var(--brand-50);border-radius:14px;padding:16px;margin-bottom:22px;}
-.dark .gm-import{background:rgba(37,99,235,.08);border-color:var(--brand-700);}
-.gm-import-title{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:700;color:var(--brand-700);}
-.dark .gm-import-title{color:var(--brand-400);}
-.gm-import-title svg{width:18px;height:18px;}
-.gm-import-sub{font-size:12px;color:var(--muted);margin:4px 0 12px;}
-.gm-import-row{display:flex;gap:10px;flex-wrap:wrap;}
-.gm-import-row input{flex:1 1 200px;padding:10px 12px;border:1px solid var(--border);border-radius:10px;
-  font-size:14px;background:var(--card);color:var(--text);font-family:inherit;}
-.gm-import-row input:focus{border-color:var(--brand-500);box-shadow:0 0 0 3px rgba(37,99,235,.12);outline:none;}
-.gm-import-row .btn{flex:1 1 150px;justify-content:center;}
-.gm-import-row .btn:disabled{opacity:.7;cursor:default;transform:none;}
-.mini-spin{width:15px;height:15px;border:2px solid rgba(255,255,255,.45);border-top-color:#fff;
-  border-radius:50%;display:inline-block;animation:spin .7s linear infinite;}
 
 /* NOTIFICACIONES */
 .notif-wrap{position:relative;}
@@ -888,14 +871,6 @@ function openLeadForm(lead){
   modal.innerHTML = `<div class="modal"><div class="modal-head"><h3>${lead?'Editar Lead':'Nuevo Lead'}</h3>
     <button class="icon-btn" onclick="this.closest('.modal-bg').remove()">${svg(I.x)}</button></div>
     <div class="modal-body">
-      ${!lead?`<div class="gm-import">
-        <div class="gm-import-title">${svg(I.target)} Importar desde Google Maps</div>
-        <p class="gm-import-sub">Pegá el link del negocio y autocompletamos los datos.</p>
-        <div class="gm-import-row">
-          <input id="gm_url" type="url" inputmode="url" autocomplete="off" placeholder="https://maps.app.goo.gl/..." onkeydown="if(event.key==='Enter'){event.preventDefault();importFromMaps(this.nextElementSibling);}">
-          <button type="button" class="btn btn-primary" onclick="importFromMaps(this)">${svg(I.download)}Obtener datos</button>
-        </div>
-      </div>`:''}
       <div class="form-section-title">Datos Personales</div>
       <div class="form-grid">
         <div class="field"><label>Nombre *</label><input id="f_nombre" value="${e.nombre||''}"></div>
@@ -926,36 +901,6 @@ function openLeadForm(lead){
       </div>
     </div></div>`;
   document.body.appendChild(modal);
-}
-async function importFromMaps(btn){
-  const inp = document.getElementById('gm_url');
-  const url = (inp?inp.value:'').trim();
-  if(!url){ toast('Pegá un link de Google Maps'); inp&&inp.focus(); return; }
-  const orig = btn.innerHTML;
-  btn.disabled = true; if(inp) inp.disabled = true;
-  btn.innerHTML = `<span class="mini-spin"></span>Obteniendo...`;
-  try{
-    const r = await fetch('/api/places?url='+encodeURIComponent(url));
-    const d = await r.json().catch(()=>({}));
-    if(!r.ok || d.error) throw new Error(d.error || 'No se pudieron obtener los datos');
-    const set = (id,v)=>{ if(!v) return; const el=document.getElementById(id); if(el && !el.value.trim()) el.value=v; };
-    set('f_empresa', d.nombre);
-    set('f_rubro', d.rubro);
-    set('f_ciudad', d.ciudad);
-    set('f_whatsapp', d.telefono);
-    set('f_sitio_web', d.sitio_web);
-    if(d.provincia){ const sel=document.getElementById('f_provincia'); if(sel && !sel.value){ const m=[...sel.options].find(o=>o.value && d.provincia.toLowerCase().includes(o.value.toLowerCase())); if(m) sel.value=m.value; } }
-    const obs = document.getElementById('f_obs');
-    if(obs){
-      const block = [ d.direccion?('📍 '+d.direccion):'', (d.lat&&d.lng)?('Coordenadas: '+d.lat+', '+d.lng):'', 'Fuente: Google Maps', url ].filter(Boolean).join('\n');
-      obs.value = obs.value.trim() ? (obs.value.trim()+'\n\n'+block) : block;
-    }
-    toast('Datos cargados ✓ — revisá y completá el contacto');
-  }catch(err){
-    toast(err.message || 'Error al obtener los datos');
-  }finally{
-    btn.disabled=false; if(inp) inp.disabled=false; btn.innerHTML=orig;
-  }
 }
 function val(id){ const el=document.getElementById(id); return el?el.value.trim():''; }
 async function saveLead(id){
