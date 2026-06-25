@@ -973,6 +973,7 @@ function openLeadForm(lead){
       </div>
       <div class="form-grid full" style="margin-top:14px"><div class="field"><label>Observaciones</label><textarea id="f_obs">${e.observaciones||''}</textarea></div></div>
       <div class="modal-foot">
+        ${lead?`<button class="btn btn-danger" onclick="deleteLeadFromForm('${lead.id}')">${svg(I.trash)}Borrar</button>`:''}
         <button class="btn btn-secondary" onclick="this.closest('.modal-bg').remove()">Cancelar</button>
         <button class="btn btn-primary" onclick="saveLead('${lead?lead.id:''}')">${lead?'Guardar Cambios':'Crear Lead'}</button>
       </div>
@@ -1117,6 +1118,12 @@ async function deleteLead(id){
   if(!confirm('¿Eliminar este lead? Esta acción no se puede deshacer.')) return;
   await dbDelete('leads',id); // activities/notes/tasks se borran en cascada (FK)
   await loadAllData(); toast('Lead eliminado'); go('leads');
+}
+async function deleteLeadFromForm(id){
+  if(!confirm('¿Borrar este prospecto? Esta acción no se puede deshacer.')) return;
+  const modal = document.querySelector('.modal-bg'); if(modal) modal.remove();
+  await dbDelete('leads',id);
+  await loadAllData(); toast('Prospecto borrado'); go(currentPage);
 }
 
 /* ============================================================
